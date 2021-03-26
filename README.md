@@ -33,6 +33,7 @@ Four different types of keymaps can be set
 * `localleader`: `<LocalLeader>` in normal mode.
 * `visual`: `<Leader>` in visual mode.
 * `localvisual`: `<LocalLeader>` in visual mode.
+
 Note that you won't need to map the leader-keys to the `WhichKey`-command since this will be handled automatically by `whichkey-setup`.
 
 All commands specified are directly mapped rather relying on whichkey to execute them which allows you to set arbitrary complex commands.
