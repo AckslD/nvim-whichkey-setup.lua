@@ -4,8 +4,8 @@ This nvim-plugin is just a wrapper for [`vim-which-key`](https://github.com/liuc
 
 # Features
 * Simple setup in lua.
-* Can handle leader and localleader in normal and visual mode through global of buffer keymaps.
 * Can handle complex commands without having the need to make a dedicated command for them as is the case with bare `whichkey`.
+* Can handle leader and localleader in normal and visual mode through global or buffer keymaps.
 
 # Installation
 
