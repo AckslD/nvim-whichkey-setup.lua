@@ -38,6 +38,23 @@ Note that you won't need to map the leader-keys to the `WhichKey`-command since 
 
 All commands specified are directly mapped rather relying on whichkey to execute them which allows you to set arbitrary complex commands.
 
+## Config
+Apart from setting up keymaps (see below) whichkey-setup also has a few global settings which can be configured by calling `require("whichkey_setup").config`.
+The following example sets the defaults (further explained below):
+```lua
+require("whichkey_setup").config{
+    hide_statusline = false,
+    default_keymap_settings = {
+        silent=true,
+        noremap=true,
+    },
+}
+```
+* `hide_statusline`: Configures autocommands to hide the statusline when whichkey window is showing, uses [these autocommands](https://github.com/liuchengxu/vim-which-key#hide-statusline).
+  The autocommands are configured when the `config`-function is called.
+* `default_keymap_settings`: These are the settings used by default for keymaps, i.e. when no `opts` is given to `register_keymap`, see [below](#map-options-and-buffer-local-keymaps).
+  Note that for these defaults to be used they need to be configured before calling `register_keymap`.
+
 ## Examples
 ### General
 ```lua

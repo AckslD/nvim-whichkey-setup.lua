@@ -1,5 +1,14 @@
 M = {}
 
+-- Default settings
+local settings = {
+    hide_statusline = false,
+    default_keymap_settings = {
+        silent=true,
+        noremap=true,
+    },
+}
+
 local textmaps = {
     leader = {},
     localleader = {},
@@ -51,10 +60,24 @@ local function setup_keymap(mode, leaders, keymap, textmap, opts, bufnr)
     end
 end
 
-M.register_keymap = function(leader_type, keymap, opts)
+local function handle_user_opts(opts)
+    local default_opts = {
+        silent = settings.default_keymap_settings.silent,
+        noremap = settings.default_keymap_settings.noremap,
+    }
     if opts == nil then
-        opts = {silent=true, noremap=true}
+        opts = {}
     end
+    for key, value in pairs(default_opts) do
+        if opts[key] == nil then
+            opts[key] = value
+        end
+    end
+    return opts
+end
+
+M.register_keymap = function(leader_type, keymap, opts)
+    opts = handle_user_opts(opts)
     local bufnr = opts.bufnr
     opts.bufnr = nil
     local mode, key, mapped_key
@@ -85,6 +108,24 @@ M.register_keymap = function(leader_type, keymap, opts)
     vim.fn['which_key#register'](mapped_key, textmap)
     mapped_key = vim.fn.escape(mapped_key, '\\')
     vim.api.nvim_set_keymap(mode, key, ':<c-u> :WhichKey "'..mapped_key..'"<CR>', {silent=true, noremap=true})
+end
+
+local function setup_hide_statusline()
+    vim.cmd('autocmd! FileType which_key')
+    vim.cmd('autocmd Filetype which_key set laststatus=0 noshowmode noruler | autocmd BufLeave <buffer> set laststatus=2 showmode ruler')
+end
+
+M.config = function(user_settings)
+    user_settings = user_settings or {}
+    for key, value in pairs(user_settings) do
+        if settings[key] == nil then
+            vim.cmd('echoerr "Unknown setting '..key..'"')
+        end
+        settings[key] = value
+    end
+    if settings.hide_statusline then
+        setup_hide_statusline()
+    end
 end
 
 return M
