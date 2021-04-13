@@ -80,6 +80,7 @@ M.register_keymap = function(leader_type, keymap, opts)
     opts = handle_user_opts(opts)
     local bufnr = opts.bufnr
     opts.bufnr = nil
+    local mapkey = leader_type
     local mode, key, mapped_key
     if (leader_type == 'leader') then
         mode = 'n'
@@ -102,9 +103,10 @@ M.register_keymap = function(leader_type, keymap, opts)
         if mode == nil then mode = 'n' end
         key = leader_type
         mapped_key = leader_type
+        mapkey = leader_type .. mode
     end
-    if textmaps[leader_type] == nil then textmaps[leader_type] = {} end
-    local textmap = textmaps[leader_type]
+    if textmaps[mapkey] == nil then textmaps[mapkey] = {} end
+    local textmap = textmaps[mapkey]
     setup_keymap(mode, {key}, keymap, textmap, opts, bufnr)
 
     -- TODO at the moment we register with whichkey plugin everytime
