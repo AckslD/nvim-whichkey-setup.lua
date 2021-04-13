@@ -98,8 +98,12 @@ M.register_keymap = function(leader_type, keymap, opts)
         key = '<Localleader>'
         mapped_key = '<LocalVisualBindings>'
     else
-        vim.cmd('echoerr "Unknown map type '..leader_type..'"')
+        mode = opts.mode
+        if mode == nil then mode = 'n' end
+        key = leader_type
+        mapped_key = leader_type
     end
+    if textmaps[leader_type] == nil then textmaps[leader_type] = {} end
     local textmap = textmaps[leader_type]
     setup_keymap(mode, {key}, keymap, textmap, opts, bufnr)
 
