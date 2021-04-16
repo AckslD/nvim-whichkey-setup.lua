@@ -28,11 +28,10 @@ Other settings such as `vim.g.which_key_timeout` needs to be set separately.
 
 For how to setup the keymaps see examples below.
 Additionally, feel free to checkout my own [config](https://gitlab.com/AckslD/config/-/tree/master/nvim) for how I use it.
-Four different types of keymaps can be set
-* `leader`: `<Leader>` in normal mode.
-* `localleader`: `<LocalLeader>` in normal mode.
-* `visual`: `<Leader>` in visual mode.
-* `localvisual`: `<LocalLeader>` in visual mode.
+You can use any key as initial key (not only leader) in normal or visual mode.
+To specify a leader key use the keywords:
+* `leader` (uses`<Leader>` in normal mode and `<VisualBindings>` in visual)
+* `localleader` (uses `<LocalLeader>` in normal mode and `<LocalVisualBindings>` in visual).
 
 Note that you won't need to map the leader-keys to the `WhichKey`-command since this will be handled automatically by `whichkey-setup`.
 
@@ -48,12 +47,14 @@ require("whichkey_setup").config{
         silent=true,
         noremap=true,
     },
+    default_mode = 'n',
 }
 ```
 * `hide_statusline`: Configures autocommands to hide the statusline when whichkey window is showing, uses [these autocommands](https://github.com/liuchengxu/vim-which-key#hide-statusline).
   The autocommands are configured when the `config`-function is called.
 * `default_keymap_settings`: These are the settings used by default for keymaps, i.e. when no `opts` is given to `register_keymap`, see [below](#map-options-and-buffer-local-keymaps).
   Note that for these defaults to be used they need to be configured before calling `register_keymap`.
+* `default_mode`: Default mode used for mappings if not specified.
 
 ## Examples
 ### General
@@ -103,13 +104,13 @@ local local_keymap = {
     r = {':!python %', 'run python'},
 }
 
-wk.register_keymap('visual', visual_keymap)
+wk.register_keymap('leader', visual_keymap, {mode = 'v'})
 wk.register_keymap('localleader', local_keymap)
 ```
 
 ### Map options and buffer local keymaps
 You can pass options to the `register_keymap`-function which are all passed when setting the actual keymap.
-If no options are passed `{silent = true, noremap = true}` is used.
+If no options are passed `{silent = true, noremap = true}` is used, however these defaults can also be configured using `default_keymap_settings`, see [above](#config).
 Additionally you to the map-options you can also pass a `bufnr` to define buffer-local keymap. If `bufnr` is not set a global keymap is defined.
 ```lua
 local wk = require('whichkey_setup')
@@ -121,6 +122,22 @@ elseif client.resolved_capabilities.document_range_formatting then
     keymap.l.f = {"<Cmd>lua vim.lsp.buf.range_formatting()<CR>", 'format'}
 end
 wk.register_keymap('leader', keymap, {noremap=true, silent=true, bufnr=bufnr})
-
-wk.register_keymap('leader', keymap)
 ```
+
+### Arbitrary keys
+You are not restricted to only configuring leader keys but also other keys, e.g.
+```lua
+local keymap_goto = {
+    name = "+goto",
+    h = { "<cmd>lua require'lspsaga.provider'.lsp_finder()<CR>", "References" },
+    d = { "<cmd>lua require'lspsaga.provider'.preview_definition()<CR>", "Peek Definition" },
+    D = { "<Cmd>lua vim.lsp.buf.definition()<CR>", "Goto Definition" },
+    s = { "<cmd>lua require('lspsaga.signaturehelp').signature_help()<CR>", "Signature Help" },
+    i = { "<cmd>lua vim.lsp.buf.implementation()<CR>", "Goto Implementation" }
+  }
+
+wk.register_keymap("g", keymap_goto, { noremap = true, silent = true, bufnr = bufnr })
+```
+Credit: @folke.
+
+However, notice that this might make certain operators not function anymore due to how this is handled in which-key, see [this issue](https://github.com/liuchengxu/vim-which-key/issues/113) for example.
