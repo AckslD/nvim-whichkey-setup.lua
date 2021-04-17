@@ -166,7 +166,7 @@ M.setup_which_key = function()
     for textmap_key, textmap in pairs(textmaps) do
         local entries = from_textmap_key(textmap_key)
         local mode = entries.mode
-        local key_spec = get_key_spec(entries.initial_key)
+        local key_spec = get_key_spec(entries.initial_key, mode)
         local key = key_spec.key
         local raw_key = key_spec.raw_key
         -- local bufnr = entries.bufnr -- TODO start using this when supported by which_key
