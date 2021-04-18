@@ -124,10 +124,18 @@ function wkbind.nvim_load_mapping(mapping)
             local textmap = value.description -- this is the string value of the description
             vim.api.nvim_set_keymap(mode, keymap, rhs, options)
         end
-        -- right here append these values for mode, keymap, textmap to the appropriate table for which-key popup
+        -- right here append these values for mode, keymap, textmap to the appropriate table for which-key popup; see below
         -- table.insert(whichtable)
     end
-    -- wk(whichtable)
+    -- return(whichtable)
 end
 
 return wkbind
+
+--[[ 
+basically, the there just needs to be a wrapper function that will connect the dots from here to the plugin setup
+configuration. in other words, 'return(whichtable)' in the last function call needs to be fitted. handling keymaps 
+this way is more robust than how which-key does it (from what i remember). 
+
+but nothing is easy, time is limited, and this particular rabbit hole will quickly spiral into a full rebuild of which-key in lua.  
+--]] 
