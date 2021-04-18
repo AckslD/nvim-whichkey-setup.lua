@@ -13,6 +13,8 @@ There are 4 boolean mapping option parameters:
   silent
   expr
   nowait
+
+Then the optional text description, which is not fully implemented.
 ]]
 
 -- mapping options like noremap, silent, etc.
@@ -36,7 +38,8 @@ function rhs_options:new()
             silent = false,
             expr = false,
             nowait = false
-        }
+        },
+        description = ''
     }
     setmetatable(instance, self)
     self.__index = self
@@ -57,6 +60,11 @@ end
 function rhs_options:map_cu(cmd_string)
     self.cmd = (":<C-u>%s<CR>"):format(cmd_string)
     return self
+end
+
+function rhs_options:with_desc(desc)
+  self.description = desc or ''
+  return self
 end
 
 -- this one is not implemented but could be
@@ -105,15 +113,21 @@ function wkbind.map_args(cmd_string)
     return opts:map_args(cmd_string)
 end
 
+
+
 function wkbind.nvim_load_mapping(mapping)
     for key, value in pairs(mapping) do
         local mode, keymap = key:match("([^|]*)|?(.*)")
         if type(value) == 'table' then
             local rhs = value.cmd
             local options = value.options
+            local textmap = value.description -- this is the string value of the description
             vim.api.nvim_set_keymap(mode, keymap, rhs, options)
         end
+        -- right here append these values for mode, keymap, textmap to the appropriate table for which-key popup
+        -- table.insert(whichtable)
     end
+    -- wk(whichtable)
 end
 
 return wkbind
